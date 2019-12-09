@@ -1,6 +1,5 @@
-import pygame
-import random
-from Settings import *
+import random as random
+
 from Sprites import *
 
 class Game:
@@ -15,14 +14,13 @@ class Game:
     def new(self):
         self.all_sprites = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
-        self.player = Personnage()
+        self.player = Personnage(self)
         self.all_sprites.add(self.player)
-        p1 = Plateforme(0, HEIGHT - 40, WIDTH, 40)
-        p2 = Plateforme(WIDTH / 2 - 50, HEIGHT * 3 / 4, 100, 20)
-        self.all_sprites.add(p1)
-        self.all_sprites.add(p2)
-        self.platforms.add(p1)
-        self.platforms.add(p2)
+        for plat in PLAT_LIST:
+            p = Plateforme(*plat)
+            self.all_sprites.add(p)
+            self.platforms.add(p)
+            self.last_one = p
         self.run()
 
     def run(self):
@@ -35,10 +33,26 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        hits = pygame.sprite.spritecollide(self.player, self.platforms, False)
-        if hits:
-            self.player.pos.y = hits[0].rect.top
-            self.player.vel.y = 0
+        if self.player.vel.y > 0:
+            hits = pygame.sprite.spritecollide(self.player, self.platforms, False)
+            if hits:
+                self.player.pos.y = hits[0].rect.top
+                self.player.vel.y = 0
+
+        if self.player.rect.top <= HEIGHT / 4:
+            self.player.pos.y += abs(self.player.vel.y)
+            for plat in self.platforms:
+                plat.rect.y += abs(self.player.vel.y)
+                if plat.rect.top > HEIGHT:
+                    plat.kill()
+
+        while len(self.platforms) < 12:
+            width = random.randrange(50, 100)
+            p = Plateforme(random.randrange(0, WIDTH - width),self.last_one.rect.y - random.randrange(110, 140), width, 20)
+            self.all_sprites.add(p)
+            self.platforms.add(p)
+            self.last_one = p
+
 
     def events(self):
         for event in pygame.event.get():
