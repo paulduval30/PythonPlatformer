@@ -25,7 +25,7 @@ class Personnage(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.x -= 1
         if hits:
-            self.vel.y = -20
+            self.vel.y = PLAYER_JUMP
 
     def update(self):
         self.acc = vec(0, PLAYER_GRAV)
@@ -127,9 +127,13 @@ class RocketBoots(Powerup):
             self.kill()
             return
         self.image = pygame.transform.scale(pygame.image.load("../res/RocketBoots/rocketBoots" +
-                                                              str((self.time % 10) + 1) + ".png"), (PLAYER_SIZE, PLAYER_SIZE))
+                                                              str((int((self.time/5) % 10)) + 1) + ".png"), (PLAYER_SIZE, PLAYER_SIZE))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = player.pos.x - self.image.get_width() / 2, player.pos.y - self.image.get_height() - \
                                    self.image.get_height() / 2
         player.vel.y = -30
         self.time += 1
+
+class SlimeBoots(Powerup):
+    def __init__(self, x, y):
+        Powerup.__init__(self, x, y)
