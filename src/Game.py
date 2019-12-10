@@ -2,6 +2,7 @@ import random as random
 
 from Sprites import *
 
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -14,10 +15,13 @@ class Game:
     def new(self):
         self.all_sprites = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
+        self.powerups = pygame.sprite.Group()
+
         self.player = Personnage(self)
         self.all_sprites.add(self.player)
+
         for plat in PLAT_LIST:
-            p = Plateforme(*plat)
+            p = Plateforme(*plat, self)
             self.all_sprites.add(p)
             self.platforms.add(p)
             self.last_one = p
@@ -38,21 +42,28 @@ class Game:
             if hits:
                 self.player.pos.y = hits[0].rect.top
                 self.player.vel.y = 0
-
+        hits = pygame.sprite.spritecollide(self.player, self.powerups, False)
+        if hits:
+            hits[0].acting = True
+        for power in self.powerups:
+            power.act(self.player)
         if self.player.rect.top <= HEIGHT / 4:
             self.player.pos.y += abs(self.player.vel.y)
             for plat in self.platforms:
                 plat.rect.y += abs(self.player.vel.y)
                 if plat.rect.top > HEIGHT:
                     plat.kill()
+            for power in self.powerups:
+                power.rect.y += abs(self.player.vel.y)
+                if power.rect.top > HEIGHT and power.acting == False:
+                    power.kill()
 
         while len(self.platforms) < 12:
             width = random.randrange(50, 100)
-            p = Plateforme(random.randrange(0, WIDTH - width),self.last_one.rect.y - random.randrange(110, 140), width, 20)
+            p = Plateforme(random.randrange(0, WIDTH - width),self.last_one.rect.y - random.randrange(90, 110), width, 20, self)
             self.all_sprites.add(p)
             self.platforms.add(p)
             self.last_one = p
-
 
     def events(self):
         for event in pygame.event.get():
@@ -79,3 +90,5 @@ g.show_start_screen()
 while g.running:
     g.new()
     g.show_go_screen()
+
+pygame.quit()
