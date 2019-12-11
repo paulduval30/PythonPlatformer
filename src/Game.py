@@ -1,5 +1,6 @@
 import random as random
 
+from Settings import HEIGHT, WIDTH, BLACK
 from Sprites import *
 
 
@@ -7,7 +8,7 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.mixer.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pygame.display.set_mode((set.WIDTH, set.HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
         self.playing = False
@@ -20,7 +21,7 @@ class Game:
         self.player = Personnage(self)
         self.all_sprites.add(self.player)
 
-        for plat in PLAT_LIST:
+        for plat in set.PLAT_LIST:
             p = Plateforme(*plat, self)
             self.all_sprites.add(p)
             self.platforms.add(p)
@@ -30,7 +31,7 @@ class Game:
     def run(self):
         self.playing = True
         while self.playing:
-            self.clock.tick(FPS)
+            self.clock.tick(set.FPS)
             self.events()
             self.update()
             self.draw()
