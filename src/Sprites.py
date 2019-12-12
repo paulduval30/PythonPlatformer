@@ -61,14 +61,14 @@ class Plateforme(pygame.sprite.Sprite):
         self.rect.y = y
         power = random.randrange(0, 100)
         if power < 10:
-            type = random.randrange(1, 3)
+            type = random.randrange(1, 4 )
             print(type)
-            # if type == 1:
-            #     powerup = Spring(x, y - height)
-            # elif type == 2:
-            #     powerup = RocketBoots(x, y - height)
-            # elif type == 3:
-            powerup = SlimeBoots(x, y -  height)
+            if type == 1:
+                powerup = Spring(x, y - height)
+            elif type == 2:
+                powerup = RocketBoots(x, y - height)
+            elif type == 3:
+                powerup = SlimeBoots(x, y -  height)
             print(powerup)
             game.powerups.add(powerup)
             game.all_sprites.add(powerup)
@@ -143,11 +143,11 @@ class SlimeBoots(Powerup):
         Powerup.__init__(self, x, y)
         self.time = 0
         self.timeLimit = 300
-        # self.image = pygame.image.load("../res/RocketBoots/rocketBoots1.png")
-        self.image = pygame.transform.scale(self.image, (100, 100))
+        self.image = pygame.image.load("../res/slimeboots.png")
+        self.image = pygame.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect()
         self.rect.x = x
-        self.rect.y = y - 100
+        self.rect.y = y - 30
 
     def act(self, player: Personnage):
         if not self.acting:
@@ -158,12 +158,7 @@ class SlimeBoots(Powerup):
             self.kill()
             set.PLAYER_JUMP = -20
             return
-        self.image = pygame.transform.scale(pygame.image.load("../res/RocketBoots/rocketBoots" +
-                                                              str((int((self.time / 5) % 10)) + 1) + ".png"),
-                                            (set.PLAYER_SIZE, set.PLAYER_SIZE))
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = player.pos.x - self.image.get_width() / 2, player.pos.y - self.image.get_height() - \
-                                   self.image.get_height() / 2
+        self.rect.x, self.rect.y = player.pos.x - self.image.get_width() / 2, player.pos.y - self.image.get_height()
         set.PLAYER_JUMP = -30
         self.time += 1
 

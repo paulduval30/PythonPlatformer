@@ -1,5 +1,3 @@
-import random as random
-
 from Settings import HEIGHT, WIDTH, BLACK
 from Sprites import *
 
